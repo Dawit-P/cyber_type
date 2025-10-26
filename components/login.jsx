@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useAuth } from "./auth-context"
+import { useAuth } from "./auth-context-firebase"
 
 export default function Login({ onSwitchToSignup, onSwitchToAdminLogin }) {
   const [email, setEmail] = useState("")

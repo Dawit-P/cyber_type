@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useAuth } from "./auth-context"
+import { useAuth } from "./auth-context-firebase"
 
 const PYTHON_SNIPPETS = [
   `import webbrowser
@@ -166,15 +166,11 @@ export default function TypingTest({ onScoreSaved, tests, onStartTest, autoStart
   }
 
   const startTest = () => {
-    if (onStartTest) {
-      onStartTest(currentSnippet)
-    } else {
-      setIsActive(true)
-      setUserInput("")
-      setTimeLeft(60)
-      setTestComplete(false)
-      codeDisplayRef.current?.focus()
-    }
+    setIsActive(true)
+    setUserInput("")
+    setTimeLeft(60)
+    setTestComplete(false)
+    codeDisplayRef.current?.focus()
   }
 
   const endTest = () => {
@@ -267,12 +263,22 @@ export default function TypingTest({ onScoreSaved, tests, onStartTest, autoStart
       {/* Buttons */}
       <div className="flex gap-4">
         {!isActive && !testComplete && (
-          <button
-            onClick={startTest}
-            className="px-8 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity"
-          >
-            Start Test
-          </button>
+          <>
+            <button
+              onClick={startTest}
+              className="px-8 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            >
+              Start Test
+            </button>
+            {onStartTest && (
+              <button
+                onClick={() => onStartTest(currentSnippet)}
+                className="px-8 py-3 bg-secondary text-secondary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity"
+              >
+                🛡️ Learn About This Attack
+              </button>
+            )}
+          </>
         )}
         {isActive && (
           <button

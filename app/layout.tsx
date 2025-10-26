@@ -1,5 +1,5 @@
 import { Ubuntu } from "next/font/google"
-import { AuthProvider } from "@/components/auth-context"
+import { AuthProvider } from "@/components/auth-context-firebase"
 import "./globals.css"
 
 const ubuntu = Ubuntu({

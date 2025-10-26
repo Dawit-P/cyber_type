@@ -6,10 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Disable Turbopack to avoid internal errors
-  experimental: {
-    turbo: false,
-  },
+  // Configure for static export
+  output: 'export',
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
 }
 
 export default nextConfig

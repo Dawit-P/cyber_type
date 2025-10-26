@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/components/auth-context"
+import { useAuth } from "@/components/auth-context-firebase"
 import Login from "@/components/login"
 import Signup from "@/components/signup"
 import AdminLogin from "@/components/admin-login"
@@ -9,27 +9,18 @@ import TypingTest from "@/components/typing-test"
 import Leaderboard from "@/components/leaderboard"
 import AdminPanel from "@/components/admin-panel"
 import CyberAwareness from "@/components/cyber-awareness"
+import History from "@/components/history"
 
 export default function Home() {
-  const { user, isAdmin, loading, logout, tests, updateTests } = useAuth()
+  const { user, isAdmin, loading, logout, tests, updateTests, scores, saveScoreToStorage, firebaseEnabled } = useAuth()
   const [authPage, setAuthPage] = useState("login")
   const [activeTab, setActiveTab] = useState("test")
-  const [scores, setScores] = useState([])
   const [showAwareness, setShowAwareness] = useState(false)
   const [currentSnippet, setCurrentSnippet] = useState("")
   const [showEducation, setShowEducation] = useState(false)
 
-  useEffect(() => {
-    const savedScores = localStorage.getItem("typingScores")
-    if (savedScores) {
-      setScores(JSON.parse(savedScores))
-    }
-  }, [])
-
   const handleScoreSaved = (newScore: any) => {
-    const updatedScores = [...scores, newScore].sort((a, b) => b.wpm - a.wpm)
-    setScores(updatedScores)
-    localStorage.setItem("typingScores", JSON.stringify(updatedScores))
+    saveScoreToStorage(newScore)
   }
 
   const handleStartTest = (snippet: string) => {
@@ -123,6 +114,16 @@ export default function Home() {
                 Leaderboard
               </button>
               <button
+                onClick={() => setActiveTab("history")}
+                className={`px-6 py-3 font-semibold transition-colors ${
+                  activeTab === "history"
+                    ? "text-accent border-b-2 border-accent"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                📊 My History
+              </button>
+              <button
                 onClick={handleShowEducation}
                 className={`px-6 py-3 font-semibold transition-colors ${
                   activeTab === "education"
@@ -156,6 +157,16 @@ export default function Home() {
                 Leaderboard
               </button>
               <button
+                onClick={() => setActiveTab("history")}
+                className={`px-6 py-3 font-semibold transition-colors ${
+                  activeTab === "history"
+                    ? "text-accent border-b-2 border-accent"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                📊 My History
+              </button>
+              <button
                 onClick={handleShowEducation}
                 className={`px-6 py-3 font-semibold transition-colors ${
                   activeTab === "education"
@@ -179,6 +190,8 @@ export default function Home() {
                 currentSnippet="" 
                 onClose={handleCloseEducation} 
               />
+            ) : activeTab === "history" ? (
+              <History scores={scores} />
             ) : (
               <Leaderboard scores={scores} />
             )
@@ -193,7 +206,6 @@ export default function Home() {
                 onScoreSaved={handleScoreSaved} 
                 tests={tests} 
                 onStartTest={handleStartTest}
-                autoStart={!showAwareness}
               />
             )
           ) : activeTab === "education" ? (
@@ -201,6 +213,8 @@ export default function Home() {
               currentSnippet="" 
               onClose={handleCloseEducation} 
             />
+          ) : activeTab === "history" ? (
+            <History scores={scores} />
           ) : (
             <Leaderboard scores={scores} />
           )}
